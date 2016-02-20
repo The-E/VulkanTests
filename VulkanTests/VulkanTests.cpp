@@ -25,17 +25,9 @@ int main()
 		engineVersion(1).
 		apiVersion(VK_API_VERSION);
 
-	auto resInit = vkT.InitInstance();
-
-	if (resInit == vk::Result::eVkErrorIncompatibleDriver) {
-		std::cout << "cannot find a compatible Vulkan ICD\n";
+	if (!vkT.CheckVulkanError(vkT.InitInstance()))
 		exit(-1);
-	} else if (resInit != vk::Result::eVkSuccess) {
-		std::cout << "unknown error\n";
-		exit(-1);
-	}
-
-
+	
 	std::vector<vk::PhysicalDevice> gpus;
 	auto resEnDevice = vk::enumeratePhysicalDevices(vkT.Instance, gpus);
 
@@ -68,7 +60,8 @@ int main()
 
 	vk::Device device;
 
-	auto resCreateDevice = vk::createDevice(gpus[0], &deviceInfo, nullptr, &device);
+	if (!vkT.CheckVulkanError(vk::createDevice(gpus[0], &deviceInfo, nullptr, &device)))
+		exit(-1);
 
 	vk::destroyDevice(device, nullptr);
 

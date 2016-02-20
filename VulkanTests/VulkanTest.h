@@ -13,5 +13,7 @@ public:
 
 	vk::Result InitInstance();
 	void DestroyInstance();
+
+	bool CheckVulkanError(vk::Result result);
 };
 
