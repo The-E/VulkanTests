@@ -36,12 +36,18 @@
     <ClInclude Include="glm\glm.hpp">
       <Filter>glm</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VulkanTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
