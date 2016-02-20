@@ -28,42 +28,10 @@ int main()
 	if (!vkT.CheckVulkanError(vkT.InitInstance()))
 		exit(-1);
 	
-	std::vector<vk::PhysicalDevice> gpus;
-	auto resEnDevice = vk::enumeratePhysicalDevices(vkT.Instance, gpus);
-
-	auto queue_properties = vk::getPhysicalDeviceQueueFamilyProperties(gpus[0]);
-
-	bool foundGraphicsQueue = false;
-
-	for each (auto queue_property in queue_properties)
-	{
-		if (queue_property.queueFlags() & vk::QueueFlagBits::eGraphics) {
-			foundGraphicsQueue = true;
-		}
-	}
-
-	if (!foundGraphicsQueue) {
-		std::cout << "no graphics queue\n";
-		exit(-1);
-	}
-
-	float queue_priorities[1] = { 0.0 };
-	vk::DeviceQueueCreateInfo queueInfo = {};
-	queueInfo.sType(vk::StructureType::eDeviceQueueCreateInfo).
-		queueCount(1).
-		pQueuePriorities(queue_priorities);
-
-	vk::DeviceCreateInfo deviceInfo = {};
-	deviceInfo.sType(vk::StructureType::eDeviceCreateInfo).
-		queueCreateInfoCount(1).
-		pQueueCreateInfos(&queueInfo);
-
-	vk::Device device;
-
-	if (!vkT.CheckVulkanError(vk::createDevice(gpus[0], &deviceInfo, nullptr, &device)))
+	if (!vkT.CheckVulkanError(vkT.InitDevice()))
 		exit(-1);
 
-	vk::destroyDevice(device, nullptr);
+	vkT.DestroyDevice();
 
 	vkT.DestroyInstance();
 

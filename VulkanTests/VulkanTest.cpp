@@ -25,6 +25,44 @@ void VulkanTest::DestroyInstance() {
 	destroyInstance(Instance, nullptr);
 }
 
+Result VulkanTest::InitDevice() {
+	auto result = enumeratePhysicalDevices(Instance, GPUs);
+
+	if (!CheckVulkanError(result))
+		return result;
+
+	QueueProperties = getPhysicalDeviceQueueFamilyProperties(GPUs[0]);
+
+	bool foundGraphicsQueue = false;
+	for each (auto queueProperty in QueueProperties) {
+		if (queueProperty.queueFlags() & QueueFlagBits::eGraphics) {
+			foundGraphicsQueue = true;
+			break;
+		}
+	}
+
+	if (!foundGraphicsQueue) {
+		return Result::eVkErrorInitializationFailed;
+	}
+
+	float queuePriorities[1] = { 0.0 };
+	DeviceQueueCreateInfo queueInfo = {};
+	queueInfo.sType(StructureType::eDeviceQueueCreateInfo).
+		queueCount(1).
+		pQueuePriorities(queuePriorities);
+
+	DeviceCreateInfo deviceInfo = {};
+	deviceInfo.sType(StructureType::eDeviceCreateInfo).
+		queueCreateInfoCount(1).
+		pQueueCreateInfos(&queueInfo);
+
+	return createDevice(GPUs[0], &deviceInfo, nullptr, &Device);
+}
+
+void VulkanTest::DestroyDevice() {
+	destroyDevice(Device, nullptr);
+}
+
 bool VulkanTest::CheckVulkanError(Result result) {
 	switch (result) {
 	case Result::eVkErrorDeviceLost:
